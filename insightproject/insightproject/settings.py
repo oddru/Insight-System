@@ -75,11 +75,12 @@ WSGI_APPLICATION = 'insightproject.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresq1',
+        'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'LoginRegisterLogout',
         'USER': 'postgres',
-        'PASSWORD': 'admin@123',
+        'PASSWORD': '1349',
         'HOST': 'localhost',
+        'PORT': '5432',
         
     }
 }
