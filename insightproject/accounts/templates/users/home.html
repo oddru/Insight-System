@@ -106,7 +106,7 @@
     </section>
 
     <!-- Login/Register Modal -->
-    <div id="loginModal" class="modal">
+    <div id="loginModal" class="modal{% if error_message or show_modal %} show{% endif %}">
       <div class="modal-content">
         <span class="modal-close">&times;</span>
         
@@ -114,10 +114,15 @@
           <!-- Login Form (shown by default) -->
           <div id="login-form" class="auth-form active">
             <h2>Login</h2>
+            {% if error_message %}
+              <div class="form-errors">
+                <p class="error-message">{{ error_message }}</p>
+              </div>
+            {% endif %}
             <form id="loginForm" method="POST" action="{% url 'login' %}">
               {% csrf_token %}
               <div class="form-group">
-                <label for="username">Username</label>
+                <label for="username">Email</label>
                 <input type="text" id="username" name="username" required>
               </div>
               <div class="form-group">
@@ -147,7 +152,11 @@
               
               {% for field in form %}
                 <div class="form-group">
-                  <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                  {% if field.name == 'username' %}
+                    <label for="{{ field.id_for_label }}">Email</label>
+                  {% else %}
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                  {% endif %}
                   {{ field }}
                   {% if field.errors %}
                     <div class="field-errors">

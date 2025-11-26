@@ -539,10 +539,13 @@
 .payment-icon {
   width: 50px;
   height: 32px;
-  object-fit: cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border-radius: 4px;
   background: white;
-  padding: 2px;
+  font-size: 24px;
+  flex-shrink: 0;
 }
 
 .payment-details {

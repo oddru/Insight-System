@@ -19,14 +19,17 @@ def register(request):
     return render(request, 'users/register.html', {'form': form})
 
 def user_login(request):
+    error_message = None
     if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
+        username = request.POST.get('username', '')
+        password = request.POST.get('password', '')
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
             return redirect('dashboard')  # Redirect to dashboard instead of home
-    return render(request, 'users/login.html')
+        else:
+            error_message = "No account detected. Please check your email and password or register a new account."
+    return render(request, 'users/home.html', {'error_message': error_message, 'show_modal': True, 'form': UserCreationForm()})
 
 def user_logout(request):
     if request.method == 'POST':
