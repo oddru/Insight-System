@@ -13,7 +13,7 @@ def register(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
-            return redirect('home')  # Return to home page
+            return redirect('dashboard')  # Redirect to dashboard instead of home
     else:
         form = UserCreationForm()
     return render(request, 'users/register.html', {'form': form})
@@ -25,15 +25,23 @@ def user_login(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            return redirect('home') #return to home if not
+            return redirect('dashboard')  # Redirect to dashboard instead of home
     return render(request, 'users/login.html')
 
 def user_logout(request):
-    logout(request)
-    return redirect('home') #return to home if log out
+    if request.method == 'POST':
+        logout(request)
+        return redirect('home')
+    return redirect('home')
 
 def user_home(request):
-    return render(request, "users/home.html")
+    form = UserCreationForm()
+    return render(request, "users/home.html", {'form': form})
+
+def dashboard(request):
+    if not request.user.is_authenticated:
+        return redirect('home')
+    return render(request, "users/dashboard.html")
     
     
         

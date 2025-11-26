@@ -1,0 +1,868 @@
+/* Layout container */
+.page {
+  width: 100%;
+  background: transparent;
+  min-width: 1200px; /* screenshot appears wide — keep minimum for fidelity */
+  overflow-x: hidden;
+}
+
+/* thin top rule used in screenshot */
+.top-rule {
+  height: 6px;
+  background: #d7e34b;
+}
+
+/* HEADER */
+.site-header {
+  background: #fff;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+/* Header separator line */
+.header-separator {
+  height: 1px;
+  background: rgba(215, 227, 75, 0.3);
+  width: 100%;
+}
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  width: min(1400px, 94%);
+  margin: 0 auto;
+  padding: 0;
+  padding-left: 0;
+  gap: 20px;
+}
+
+/* Brand / logo */
+.brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 0;
+}
+.brand .logo { 
+  height: 110px; 
+  object-fit: contain;
+}
+.logo-placeholder {
+  width: 44px;
+  height: 44px;
+  background: #0e3164;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
+  font-size: 24px;
+}
+.logos-placeholder {
+  color: #6b6b6b;
+  font-size: 14px;
+  padding: 20px 0;
+}
+.brand-text {
+  font-size: 20px;
+  font-weight: 600;
+  color: #0e3164;
+  letter-spacing: 0.5px;
+}
+
+/* Center nav */
+.site-nav {
+  display: flex;
+  gap: 30px;
+  align-items: center;
+  margin-right: 20px;
+}
+.nav-link {
+  font-size: 15px;
+  color: #222;
+  position: relative;
+  padding: 6px 2px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.nav-link:hover { color: #0e3164; }
+.nav-arrow {
+  width: 10px;
+  height: 10px;
+  color: currentColor;
+  flex-shrink: 0;
+}
+
+/* Header right controls */
+.header-controls {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  margin-left: auto;
+}
+
+/* Search */
+.search-wrap {
+  background: white;
+  border-radius: 40px;
+  border: 1px solid #d0d7e3;
+  padding: 6px 10px;
+}
+.search-field {
+  border: none;
+  width: 220px;
+  font-size: 14px;
+  padding: 6px 8px;
+}
+.search-field:focus { outline: none; }
+
+/* Demo button */
+.btn {
+  font-family: inherit;
+  border: none;
+  cursor: pointer;
+  border-radius: 8px;
+  padding: 9px 14px;
+  font-size: 15px;
+}
+.demo-btn {
+  background: #d4e7ff;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.12);
+  color: #000;
+  font-weight: 500;
+}
+
+/* language */
+.lang {
+  font-size: 13px;
+  color: #444;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.lang-icon {
+  width: 16px;
+  height: 16px;
+  color: #666;
+  flex-shrink: 0;
+}
+.lang-name {
+  font-weight: 500;
+}
+.lang-code {
+  font-size: 12px;
+  color: #777;
+}
+.lang-arrow {
+  width: 12px;
+  height: 12px;
+  color: #666;
+  flex-shrink: 0;
+}
+
+/* HERO WRAPPER */
+.hero-wrapper {
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+/* HERO */
+.hero {
+  width: 100%;
+  background: transparent;
+  position: relative;
+  z-index: 1;
+}
+.hero-inner {
+  width: min(1400px, 94%);
+  margin: 0 auto;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr 560px;
+  gap: 40px;
+  align-items: center;
+  position: relative;
+}
+
+
+/* Left column */
+.hero-left {
+  padding-right: 18px;
+  padding-left: 40px;
+  margin-top: -60px;
+}
+
+.hero-title {
+  font-family: "Merriweather", serif;
+  font-weight: 700;
+  font-size: 48px;
+  line-height: 1.15;
+  color: #0b0b0b;
+  margin: 0 0 18px;
+  padding-top: 10px;
+  letter-spacing: -0.6px;
+}
+
+.hero-sub {
+  max-width: 710px;
+  color: #2c2c2c;
+  font-size: 18px;
+  margin-bottom: 28px;
+  opacity: 0.9;
+}
+
+/* Features list */
+.features {
+  list-style: none;
+  padding: 0;
+  margin: 24px 0;
+  display: grid;
+  gap: 18px;
+}
+.features li {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 18px;
+  color: #111;
+}
+.feature-icon {
+  min-width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: transparent;
+  color: #0e3164;
+  flex-shrink: 0;
+}
+.feature-icon svg {
+  width: 24px;
+  height: 24px;
+}
+
+/* CTA Footer */
+.cta-footer {
+  background: #d4e7ff;
+  width: 100%;
+  padding: 15px 0;
+  position: relative;
+  z-index: 4;
+}
+.cta-footer-inner {
+  width: min(1400px, 94%);
+  margin: 0 auto;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding-left: 40px;
+}
+.hero-ctas {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  position: relative;
+  z-index: 9999;
+}
+.btn.primary {
+  background: #0e3164;
+  color: #fff;
+  border-radius: 16px;
+  padding: 12px 20px;
+  box-shadow: 0 4px 12px rgba(14,49,100,0.18);
+  position: relative;
+  z-index: 10000;
+}
+.btn.secondary {
+  background: #fff;
+  color: #111;
+  border-radius: 16px;
+  padding: 12px 20px;
+  border: 1px solid rgba(0,0,0,0.15);
+  position: relative;
+  z-index: 10000;
+}
+
+/* Right column (image) */
+.hero-right {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 420px;
+  overflow: hidden;
+}
+
+.diagonal-bg {
+  position: absolute;
+  top: 85%;
+  right: -25%;
+  width: 220%;
+  height: 15%;
+  background: linear-gradient(135deg, rgba(231, 239, 140, 0) 0%, rgba(215, 227, 75, 0) 25%, rgba(215, 227, 75, 0.05) 35%, rgba(215, 227, 75, 0.15) 50%, rgba(215, 227, 75, 0.3) 65%, rgba(215, 227, 75, 0.5) 80%, rgba(215, 227, 75, 0.7) 95%, rgba(215, 227, 75, 0.75) 100%);
+  transform: translateY(-50%) rotate(-12deg);
+  transform-origin: center;
+  z-index: 1;
+  pointer-events: none;
+}
+
+
+.woman-image {
+  position: relative;
+  z-index: 3;
+  width: 430px;
+}
+
+
+
+/* hero image sits above the stripe visually (higher z) */
+.hero-image {
+  width: 420px;
+  height: auto;
+  border-radius: 2px;
+  object-fit: cover;
+  position: relative;
+  z-index: 2;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+  background: white;
+}
+
+/* logos strip area at bottom */
+.logo-strip {
+  margin-top: -5px;
+  background: #fff;
+  padding: 0 0 10px;
+}
+.logo-strip-inner {
+  width: min(1400px, 94%);
+  margin: 0 auto;
+  text-align: center;
+}
+.logos-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+.logo-item {
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  font-size: 14px;
+  font-weight: 500;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+.logo-item:hover {
+  opacity: 1;
+}
+.logos-img {
+  height: 48px;
+  object-fit: contain;
+  width: 100%;
+  max-width: 1200px;
+}
+
+/* Responsive tweaks for smaller wide screens */
+@media (max-width: 1300px) {
+  .hero-inner { grid-template-columns: 1fr 420px; gap: 28px; }
+  .hero-image { width: 380px; }
+}
+@media (max-width: 1000px) {
+  .page { min-width: 0; }
+  .header-inner { width: 94%; }
+  .site-nav { display: none; }
+  .hero-inner { grid-template-columns: 1fr; padding: 0 16px; gap: 18px; }
+  .hero-right { order: -1; }
+  .hero-image { width: calc(100% - 36px); max-width: 620px; }
+}
+
+/* Login Modal Styles */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 100000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  animation: fadeIn 0.3s ease;
+}
+
+.modal.show {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal-content {
+  background-color: #fff;
+  margin: auto;
+  padding: 0;
+  border-radius: 16px;
+  width: 90%;
+  max-width: 440px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  position: relative;
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.modal-close {
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  color: #666;
+  font-size: 28px;
+  font-weight: 300;
+  cursor: pointer;
+  line-height: 1;
+  z-index: 10;
+  transition: color 0.2s;
+}
+
+.modal-close:hover {
+  color: #0e3164;
+}
+
+.login-container {
+  padding: 40px;
+}
+
+.login-title {
+  font-family: "Merriweather", serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: #0b0b0b;
+  margin: 0 0 8px;
+  text-align: center;
+}
+
+.login-subtitle {
+  color: #666;
+  font-size: 15px;
+  text-align: center;
+  margin: 0 0 32px;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #222;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid #d0d7e3;
+  border-radius: 8px;
+  font-size: 15px;
+  font-family: inherit;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #0e3164;
+  box-shadow: 0 0 0 3px rgba(14, 49, 100, 0.1);
+}
+
+.form-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+}
+
+.remember-me {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  color: #444;
+}
+
+.remember-me input[type="checkbox"] {
+  width: auto;
+  cursor: pointer;
+}
+
+.forgot-password {
+  color: #0e3164;
+  text-decoration: none;
+  font-weight: 500;
+  transition: opacity 0.2s;
+}
+
+.forgot-password:hover {
+  opacity: 0.8;
+}
+
+.login-submit {
+  background: #0e3164;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 14px 20px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+  margin-top: 8px;
+}
+
+.login-submit:hover {
+  background: #0a2550;
+  transform: translateY(-1px);
+}
+
+.login-submit:active {
+  transform: translateY(0);
+}
+
+.signup-link {
+  text-align: center;
+  font-size: 14px;
+  color: #666;
+  margin: 0;
+}
+
+.signup-link a {
+  color: #0e3164;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.signup-link a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 600px) {
+  .modal-content {
+    width: 95%;
+    margin: 20px auto;
+  }
+  
+  .login-container {
+    padding: 30px 24px;
+  }
+  
+  .login-title {
+    font-size: 24px;
+  }
+}
+
+/* Modal Styling */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  animation: fadeIn 0.3s ease-in;
+}
+
+.modal.show {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.modal-content {
+  background-color: #fefefe;
+  padding: 40px;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  position: relative;
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.modal-close {
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  font-size: 28px;
+  font-weight: bold;
+  color: #aaa;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.modal-close:hover {
+  color: #000;
+}
+
+.modal-container h2 {
+  margin-top: 0;
+  color: #0e3164;
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+/* Form Switching (Login/Register) */
+.auth-form {
+  display: none;
+  animation: fadeIn 0.3s ease-in;
+}
+
+.auth-form.active {
+  display: block;
+}
+
+/* Form Styling */
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: #0e3164;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+/* Form Actions - Button and toggle link */
+.form-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.form-actions button {
+  width: 100%;
+}
+
+.auth-toggle {
+  text-align: center;
+  font-size: 14px;
+  color: #666;
+}
+
+.auth-toggle a {
+  color: #0e3164;
+  text-decoration: none;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.auth-toggle a:hover {
+  color: #d7e34b;
+  text-decoration: underline;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 14px;
+  box-sizing: border-box;
+  transition: border-color 0.3s;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #d7e34b;
+  box-shadow: 0 0 0 2px rgba(215, 227, 75, 0.2);
+}
+
+.form-group button {
+  width: 100%;
+  padding: 12px;
+  background-color: #0e3164;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.form-group button:hover {
+  background-color: #0a1f3f;
+}
+
+@media (max-width: 600px) {
+  .modal-content {
+    width: 95%;
+    padding: 30px 20px;
+  }
+  
+  .modal-close {
+    right: 15px;
+    top: 15px;
+    font-size: 24px;
+  }
+  
+  .modal-container h2 {
+    font-size: 20px;
+  }
+  
+  .modal-tabs {
+    margin-bottom: 20px;
+  }
+  
+  .modal-tab {
+    padding: 10px 15px;
+    font-size: 14px;
+  }
+}
+
+/* Django Form Field Styling */
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="password"],
+.form-group textarea,
+.form-group select {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 14px;
+  font-family: inherit;
+  box-sizing: border-box;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  background-color: #fff;
+}
+
+.form-group input[type="text"]:focus,
+.form-group input[type="email"]:focus,
+.form-group input[type="password"]:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #d7e34b;
+  box-shadow: 0 0 0 3px rgba(215, 227, 75, 0.1);
+}
+
+/* Help text and error messages */
+.help-text {
+  display: block;
+  margin-top: 6px;
+  font-size: 12px;
+  color: #666;
+  line-height: 1.4;
+}
+
+.error-message {
+  color: #d32f2f;
+  font-size: 13px;
+  margin: 6px 0;
+}
+
+.field-errors {
+  margin-top: 6px;
+}
+
+.form-errors {
+  background-color: #ffebee;
+  border: 1px solid #d32f2f;
+  border-radius: 5px;
+  padding: 12px;
+  margin-bottom: 16px;
+}
+
+.form-errors p {
+  margin: 0;
+  color: #d32f2f;
+  font-size: 13px;
+}
+
+/* Adjust form-group for better spacing with Django forms */
+.modal-tab-content .form-group {
+  margin-bottom: 16px;
+}
+
+.modal-tab-content .form-group:last-of-type {
+  margin-bottom: 24px;
+}
+
+/* Style for Django's ul elements in form fields */
+.form-group ul {
+  list-style: none;
+  padding: 0;
+  margin: 6px 0 0 0;
+}
+
+.form-group ul li {
+  font-size: 12px;
+  color: #666;
+  margin: 4px 0;
+}
+
+.form-group ul li:before {
+  content: "• ";
+  color: #d7e34b;
+  font-weight: bold;
+  margin-right: 6px;
+}

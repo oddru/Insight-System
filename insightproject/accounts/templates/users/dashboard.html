@@ -1,0 +1,268 @@
+{% extends 'users/base.html' %}
+{% load static %}
+
+{% block content %}
+  <div class="dashboard-page">
+    <!-- Sidebar Navigation -->
+    <aside class="dashboard-sidebar">
+      <div class="sidebar-header">
+        <a href="{% url 'dashboard' %}" class="sidebar-logo-link">
+          <img src="{% static 'assets/images/insightlogo.png' %}" alt="INSIGHT" class="sidebar-logo">
+        </a>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-section">
+          <a href="#" class="nav-item active">
+            <span class="nav-icon">📅</span>
+            <span class="nav-label">Bookings</span>
+          </a>
+          <a href="#" class="nav-item">
+            <span class="nav-icon">💳</span>
+            <span class="nav-label">Transactions</span>
+          </a>
+          <a href="#" class="nav-item">
+            <span class="nav-icon">⚙️</span>
+            <span class="nav-label">Services</span>
+          </a>
+          <a href="#" class="nav-item">
+            <span class="nav-icon">👥</span>
+            <span class="nav-label">Friends</span>
+          </a>
+        </div>
+
+        <div class="nav-section">
+          <a href="#" class="nav-item">
+            <span class="nav-icon">⚙️</span>
+            <span class="nav-label">Settings</span>
+          </a>
+          <div class="nav-submenu">
+            <a href="#" class="nav-subitem">Profile</a>
+            <a href="#" class="nav-subitem">Billing Details</a>
+            <a href="#" class="nav-subitem">Manage Widgets</a>
+            <a href="#" class="nav-subitem">Payment Settings</a>
+          </div>
+        </div>
+
+        <div class="nav-section">
+          <a href="#" class="nav-item">
+            <span class="nav-icon">🔔</span>
+            <span class="nav-label">Notifications</span>
+          </a>
+        </div>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-profile" id="userProfileDropdown">
+          <span class="user-name">Ralphner</span>
+          <span class="user-dropdown">▼</span>
+          <div class="user-dropdown-menu">
+            <form method="POST" action="{% url 'logout' %}" style="width: 100%;">
+              {% csrf_token %}
+              <button type="submit" class="dropdown-item" style="width: 100%; text-align: left; border: none; background: none; cursor: pointer; padding: 12px 16px;">Logout</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="dashboard-main">
+      <div class="dashboard-container">
+        <!-- Top Section: Wallet -->
+        <section class="wallet-section">
+          <div class="wallet-tabs">
+            <button class="wallet-tab active">Wallet</button>
+            <button class="wallet-tab">Save</button>
+            <button class="wallet-tab">Grow</button>
+            <button class="wallet-tab">Donate</button>
+          </div>
+
+          <div class="wallet-card">
+            <div class="wallet-balance">
+              <span class="balance-label">AVAILABLE BALANCE</span>
+              <div class="balance-info">
+                <span class="balance-amount">$39.00</span>
+                <span class="balance-icon">ℹ️</span>
+              </div>
+            </div>
+
+            <div class="wallet-actions">
+              <button class="action-btn">
+                <span class="action-icon">🏦</span>
+                <span class="action-label">Transfer</span>
+              </button>
+              <button class="action-btn">
+                <span class="action-icon">📱</span>
+                <span class="action-label">QR Scan</span>
+              </button>
+              <button class="action-btn">
+                <span class="action-icon">💾</span>
+                <span class="action-label">Save</span>
+              </button>
+              <button class="action-btn">
+                <span class="action-icon">✈️</span>
+                <span class="action-label">Travel</span>
+              </button>
+              <button class="action-btn">
+                <span class="action-icon">📊</span>
+                <span class="action-label">Trends</span>
+              </button>
+              <button class="action-btn">
+                <span class="action-icon">🏦</span>
+                <span class="action-label">Transfer</span>
+              </button>
+              <button class="action-btn">
+                <span class="action-icon">📋</span>
+                <span class="action-label">QR Scan</span>
+              </button>
+              <button class="action-btn">
+                <span class="action-icon">💰</span>
+                <span class="action-label">Save</span>
+              </button>
+              <button class="action-btn">
+                <span class="action-icon">🌍</span>
+                <span class="action-label">Travel</span>
+              </button>
+              <button class="action-btn">
+                <span class="action-icon">📈</span>
+                <span class="action-label">Trends</span>
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Middle Section: Transaction History -->
+        <section class="transaction-section">
+          <h3 class="section-title">Transaction History</h3>
+          
+          <div class="transactions-list">
+            <!-- Transaction 1 -->
+            <div class="transaction-item pending">
+              <div class="transaction-amount">$65.00</div>
+              <div class="transaction-status">
+                <span class="badge pending">Pending</span>
+              </div>
+              <div class="transaction-recipient">
+                <div class="recipient-avatar">👤</div>
+                <span>Sam Aison Arreglo</span>
+              </div>
+              <div class="transaction-date">November 7, 2025</div>
+              <div class="transaction-method">Visa 5042</div>
+            </div>
+
+            <!-- Transaction 2 -->
+            <div class="transaction-item completed">
+              <div class="transaction-amount">$65.00</div>
+              <div class="transaction-status">
+                <span class="badge completed">Completed</span>
+              </div>
+              <div class="transaction-recipient">
+                <div class="recipient-avatar">👤</div>
+                <span>Sam Aison Arreglo</span>
+              </div>
+              <div class="transaction-date">November 7, 2025</div>
+              <div class="transaction-method">Visa 5042</div>
+            </div>
+
+            <!-- Billing Plan Section -->
+            <div class="billing-plan-item">
+              <div class="billing-plan-header">
+                <h4>Billing Plan</h4>
+              </div>
+              <div class="billing-plan-content">
+                <div class="billing-row">
+                  <div class="billing-col">
+                    <span class="billing-label">Company Fund</span>
+                    <span class="billing-value">Status</span>
+                  </div>
+                  <div class="billing-col">
+                    <span class="billing-label">Started</span>
+                    <span class="billing-value">Invoice Date: November 7, 2025</span>
+                  </div>
+                  <div class="billing-col">
+                    <span class="billing-label">ID number: A5D3423</span>
+                    <span class="billing-value">Date Sent: November 6, 2025</span>
+                  </div>
+                </div>
+                <div class="billing-amount">
+                  <strong>Amount Due:</strong> $500.00
+                </div>
+              </div>
+            </div>
+
+            <!-- Transaction 3 -->
+            <div class="transaction-item completed">
+              <div class="transaction-amount">$65.00</div>
+              <div class="transaction-status">
+                <span class="badge completed">Completed</span>
+              </div>
+              <div class="transaction-recipient">
+                <div class="recipient-avatar">👤</div>
+                <span>Sam Aison Arreglo</span>
+              </div>
+              <div class="transaction-date">November 7, 2025</div>
+              <div class="transaction-method">Visa 5042</div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- Right Sidebar: Payment Info & Storage -->
+      <aside class="dashboard-right-sidebar">
+        <!-- Payment Information -->
+        <div class="card payment-card">
+          <div class="card-header">
+            <h4>Payment Information</h4>
+            <button class="card-edit">✏️</button>
+          </div>
+          <div class="card-body">
+            <div class="payment-method">
+              <img src="{% static 'assets/images/mastercard.png' %}" alt="Mastercard" class="payment-icon">
+              <div class="payment-details">
+                <p class="payment-name">Mastercard 5462</p>
+                <p class="payment-expiry">Exp. Date: 12/26</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Location Card -->
+        <div class="card location-card">
+          <div class="map-placeholder">
+            <span class="map-icon">📍</span>
+          </div>
+          <div class="location-info">
+            <h4>Elsie Saunders</h4>
+            <p>105 Mill Pond Dr, New Rochelle, NY 10801</p>
+          </div>
+        </div>
+
+        <!-- Storage Card -->
+        <div class="card storage-card">
+          <h4>Storage</h4>
+          <div class="storage-bar">
+            <div class="storage-used"></div>
+          </div>
+          <p class="storage-text">Using 0.65GB from 1GB</p>
+          
+          <div class="storage-visual">
+            <div class="chart-bar">
+              <div class="chart-segment" style="background: #FF6B6B;"></div>
+              <div class="chart-segment" style="background: #4ECDC4;"></div>
+            </div>
+            <div class="chart-bar">
+              <div class="chart-segment" style="background: #45B7D1;"></div>
+              <div class="chart-segment" style="background: #FFA07A;"></div>
+            </div>
+          </div>
+
+          <button class="buy-storage-btn">Buy Storage</button>
+        </div>
+      </aside>
+    </main>
+  </div>
+
+  <script src="{% static 'js/dashboard.js' %}"></script>
+{% endblock content %}
+
