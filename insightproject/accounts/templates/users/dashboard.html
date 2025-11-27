@@ -54,7 +54,7 @@
 
       <div class="sidebar-footer">
         <div class="user-profile" id="userProfileDropdown">
-          <span class="user-name">Ralphner</span>
+          <span class="user-name">{{ user.username }}</span>
           <span class="user-dropdown">▼</span>
           <div class="user-dropdown-menu">
             <form method="POST" action="{% url 'logout' %}" style="width: 100%;">
@@ -68,6 +68,40 @@
 
     <!-- Main Content -->
     <main class="dashboard-main">
+      <style>
+        /* Prevent a flash of transactions on initial load by hiding
+           the transactions list until JS marks it ready. This avoids
+           seeing the list briefly during the login redirect. */
+        .transactions-list { visibility: hidden; opacity: 0; transition: opacity .18s ease; }
+        .transactions-list._ready { visibility: visible; opacity: 1; }
+
+        /* Small icon button for the balance toggle (fixed size to avoid layout shift) */
+        .icon-btn {
+          border: none;
+          background: transparent;
+          width: 30px;
+          height: 30px;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          padding: 4px;
+          margin-left: 10px;
+          cursor: pointer;
+        }
+        .icon-btn:focus { outline: none; }
+
+        /* Two icon states inside the button: .eye-open (visible) and .eye-closed (hidden)
+           Toggle the parent .hidden class to switch without changing layout */
+        .icon-btn .eye-open, .icon-btn .eye-closed {
+          width: 18px; height: 18px; display: inline-block;
+        }
+        .icon-btn .eye-closed { display: none; }
+        .icon-btn.hidden .eye-open { display: none; }
+        .icon-btn.hidden .eye-closed { display: inline-block; }
+
+        /* When balance is masked we keep the same space but hide characters */
+        .balance-amount.masked { color: transparent; text-shadow: 0 0 8px rgba(0,0,0,0.25); }
+      </style>
       <div class="dashboard-container">
         <!-- Top Section: Wallet -->
         <section class="wallet-section">
@@ -82,19 +116,31 @@
             <div class="wallet-balance">
               <span class="balance-label">AVAILABLE BALANCE</span>
               <div class="balance-info">
-                <span class="balance-amount">$39.00</span>
-                <span class="balance-icon">ℹ️</span>
+                <span class="balance-amount">${{ account.balance|floatformat:2 }}</span>
+                <button id="toggleBalanceVisibility" class="icon-btn" aria-label="Toggle balance visibility" title="Toggle balance visibility">
+                  <!-- Eye open (visible) -->
+                  <svg class="eye-open" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path d="M12 5C7 5 2.73 8.11 1 12c1.73 3.89 6 7 11 7s9.27-3.11 11-7c-1.73-3.89-6-7-11-7z" stroke="#fff" stroke-width="1.2" fill="none"/>
+                    <circle cx="12" cy="12" r="3" stroke="#fff" stroke-width="1.2" fill="none"/>
+                  </svg>
+                  <!-- Eye closed / slashed (hidden) -->
+                  <svg class="eye-closed" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path d="M2 2l20 20" stroke="#fff" stroke-width="1.6"/>
+                    <path d="M12 5C7 5 2.73 8.11 1 12c1.73 3.89 6 7 11 7 2.03 0 3.92-.46 5.57-1.26" stroke="#fff" stroke-width="1.2" fill="none"/>
+                    <path d="M14.5 9.5a3 3 0 0 1 0 5" stroke="#fff" stroke-width="1.2" fill="none"/>
+                  </svg>
+                </button>
               </div>
             </div>
 
             <div class="wallet-actions">
-              <button class="action-btn">
+              <button class="action-btn" onclick="openTransferModal()">
                 <span class="action-icon">🏦</span>
                 <span class="action-label">Transfer</span>
               </button>
-              <button class="action-btn">
-                <span class="action-icon">📱</span>
-                <span class="action-label">QR Scan</span>
+              <button class="action-btn" onclick="openDepositModal()">
+                <span class="action-icon">💳</span>
+                <span class="action-label">Deposit</span>
               </button>
               <button class="action-btn">
                 <span class="action-icon">💾</span>
@@ -109,15 +155,15 @@
                 <span class="action-label">Trends</span>
               </button>
               <button class="action-btn">
-                <span class="action-icon">🏦</span>
-                <span class="action-label">Transfer</span>
+                <span class="action-icon">🎁</span>
+                <span class="action-label">Rewards</span>
               </button>
               <button class="action-btn">
                 <span class="action-icon">📋</span>
-                <span class="action-label">QR Scan</span>
+                <span class="action-label">Bills</span>
               </button>
               <button class="action-btn">
-                <span class="action-icon">💰</span>
+                <span class="action-icon">🔐</span>
                 <span class="action-label">Save</span>
               </button>
               <button class="action-btn">
@@ -136,34 +182,55 @@
         <section class="transaction-section">
           <h3 class="section-title">Transaction History</h3>
           
-          <div class="transactions-list">
-            <!-- Transaction 1 -->
-            <div class="transaction-item pending">
-              <div class="transaction-amount">$65.00</div>
-              <div class="transaction-status">
-                <span class="badge pending">Pending</span>
+          <div class="transactions-list" id="transactionsList">
+            {% if transactions %}
+              {% for transaction in transactions %}
+                <div class="transaction-item {% if transaction.transaction_type == 'deposit' or transaction.receiver == user %}completed{% else %}pending{% endif %} transaction-entry">
+                  <div class="transaction-amount">
+                    {% if transaction.transaction_type == 'deposit' or transaction.receiver == user %}
+                      +${{ transaction.amount|floatformat:2 }}
+                    {% else %}
+                      -${{ transaction.amount|floatformat:2 }}
+                    {% endif %}
+                  </div>
+                  <div class="transaction-status">
+                    {% if transaction.transaction_type == 'deposit' %}
+                      <span class="badge completed">Deposit</span>
+                    {% elif transaction.receiver == user %}
+                      <span class="badge completed">Received</span>
+                    {% else %}
+                      <span class="badge pending">Sent</span>
+                    {% endif %}
+                  </div>
+                  <div class="transaction-recipient">
+                    <div class="recipient-avatar">👤</div>
+                    <span>
+                      {% if transaction.transaction_type == 'deposit' %}
+                        Demo Deposit
+                      {% elif transaction.receiver == user %}
+                        From {{ transaction.sender.username }}
+                      {% else %}
+                        To {{ transaction.receiver.username }}
+                      {% endif %}
+                    </span>
+                  </div>
+                  <div class="transaction-date">{{ transaction.timestamp|date:"M d, Y" }}</div>
+                  <div class="transaction-method">
+                    {% if transaction.transaction_type == 'deposit' %}
+                      {{ transaction.description }}
+                    {% elif transaction.receiver == user %}
+                      Received from {{ transaction.sender.username }}
+                    {% else %}
+                      Transfer to {{ transaction.receiver.username }}
+                    {% endif %}
+                  </div>
+                </div>
+              {% endfor %}
+            {% else %}
+              <div style="text-align: center; padding: 40px; color: #999;">
+                <p>No transactions yet</p>
               </div>
-              <div class="transaction-recipient">
-                <div class="recipient-avatar">👤</div>
-                <span>Sam Aison Arreglo</span>
-              </div>
-              <div class="transaction-date">November 7, 2025</div>
-              <div class="transaction-method">Visa 5042</div>
-            </div>
-
-            <!-- Transaction 2 -->
-            <div class="transaction-item completed">
-              <div class="transaction-amount">$65.00</div>
-              <div class="transaction-status">
-                <span class="badge completed">Completed</span>
-              </div>
-              <div class="transaction-recipient">
-                <div class="recipient-avatar">👤</div>
-                <span>Sam Aison Arreglo</span>
-              </div>
-              <div class="transaction-date">November 7, 2025</div>
-              <div class="transaction-method">Visa 5042</div>
-            </div>
+            {% endif %}
 
             <!-- Billing Plan Section -->
             <div class="billing-plan-item">
@@ -263,6 +330,205 @@
     </main>
   </div>
 
+  <!-- Deposit Modal -->
+  <div id="depositModal" class="modal">
+    <div class="modal-content">
+      <span class="modal-close" onclick="closeDepositModal()">&times;</span>
+      <h2>Add Tokens</h2>
+      <p style="color: #666; font-size: 14px; margin-bottom: 20px;">Deposit demo tokens to your account</p>
+      <form method="POST" action="{% url 'deposit' %}">
+        {% csrf_token %}
+        <div class="form-group">
+          <label for="depositAmount">Amount (Tokens)</label>
+          <input type="number" id="depositAmount" name="amount" placeholder="Enter amount" min="1" step="0.01" required>
+        </div>
+        <button type="submit" class="btn primary" style="width: 100%;">Deposit</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Transfer Modal -->
+  <div id="transferModal" class="modal">
+    <div class="modal-content">
+      <span class="modal-close" onclick="closeTransferModal()">&times;</span>
+      <h2>Transfer Tokens</h2>
+      <p style="color: #666; font-size: 14px; margin-bottom: 20px;">Send tokens to another user</p>
+      <form method="POST" action="{% url 'transfer' %}">
+        {% csrf_token %}
+        <div class="form-group">
+          <label for="transferReceiver">Recipient (Username)</label>
+          <input type="text" id="transferReceiver" name="receiver" placeholder="Enter username" required>
+        </div>
+        <div class="form-group">
+          <label for="transferAmount">Amount (Tokens)</label>
+          <input type="number" id="transferAmount" name="amount" placeholder="Enter amount" min="1" step="0.01" required>
+        </div>
+        <button type="submit" class="btn primary" style="width: 100%;">Transfer</button>
+      </form>
+    </div>
+  </div>
+
   <script src="{% static 'js/dashboard.js' %}"></script>
+  <script>
+    // Modal functions
+    function openDepositModal() {
+      document.getElementById('depositModal').classList.add('show');
+      document.body.style.overflow = 'hidden';
+    }
+    
+    function closeDepositModal() {
+      document.getElementById('depositModal').classList.remove('show');
+      document.body.style.overflow = '';
+    }
+    
+    function openTransferModal() {
+      document.getElementById('transferModal').classList.add('show');
+      document.body.style.overflow = 'hidden';
+    }
+    
+    function closeTransferModal() {
+      document.getElementById('transferModal').classList.remove('show');
+      document.body.style.overflow = '';
+    }
+    
+    // Close modals when clicking outside
+    window.addEventListener('click', function(event) {
+      let depositModal = document.getElementById('depositModal');
+      let transferModal = document.getElementById('transferModal');
+      if (event.target === depositModal) {
+        closeDepositModal();
+      }
+      if (event.target === transferModal) {
+        closeTransferModal();
+      }
+    });
+    
+    // Auto-refresh transactions and balance every 2 seconds
+    function refreshTransactions() {
+      fetch('{% url "get_transactions" %}')
+        .then(response => response.json())
+        .then(data => {
+          const transactionsList = document.getElementById('transactionsList');
+          if (data.transactions && data.transactions.length > 0) {
+            let html = '';
+            data.transactions.forEach(transaction => {
+              // direction is provided by the API relative to the requesting user
+              const dir = transaction.direction || transaction.type;
+              const isReceived = dir === 'received' || dir === 'deposit';
+              const badgeClass = isReceived ? 'completed' : 'pending';
+              const badgeText = dir === 'received' ? 'Received' : (dir === 'deposit' ? 'Deposit' : 'Sent');
+              // Format amounts as USD currency
+              const formatCurrency = (val) => {
+                const num = Number(val);
+                if (Number.isNaN(num)) return val;
+                return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(num);
+              };
+              const formattedAmount = formatCurrency(transaction.amount);
+              const amount = (isReceived ? '+' : '-') + formattedAmount;
+              // prefer server-provided display strings when available
+              const senderOrReceiver = transaction.display_label || (dir === 'deposit' ? 'Demo Deposit' : (dir === 'received' ? 'From ' + transaction.sender : 'To ' + transaction.receiver));
+              const date = new Date(transaction.timestamp).toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'short', 
+                day: 'numeric' 
+              });
+              
+              html += `
+                  <div class="transaction-item ${badgeClass} transaction-entry">
+                  <div class="transaction-amount">${amount}</div>
+                  <div class="transaction-status">
+                    <span class="badge ${badgeClass}">${badgeText}</span>
+                  </div>
+                  <div class="transaction-recipient">
+                    <div class="recipient-avatar">👤</div>
+                    <span>${senderOrReceiver}</span>
+                  </div>
+                  <div class="transaction-date">${date}</div>
+                  <div class="transaction-method">${transaction.display_description || transaction.description}</div>
+                </div>
+              `;
+            });
+            transactionsList.innerHTML = html;
+          }
+        })
+        .catch(error => console.error('Error fetching transactions:', error));
+    }
+    
+    function refreshBalance() {
+      fetch('{% url "get_balance" %}')
+        .then(response => response.json())
+        .then(data => {
+          const balanceAmount = document.querySelector('.balance-amount');
+          if (balanceAmount && data.balance !== undefined) {
+            // store raw numeric value for later toggling without re-fetch
+            balanceAmount.setAttribute('data-raw', data.balance);
+            // update display according to visibility state
+            updateBalanceDisplay(data.balance);
+          }
+        })
+        .catch(error => console.error('Error fetching balance:', error));
+    }
+    
+    // Refresh every 2 seconds
+    setInterval(() => {
+      refreshTransactions();
+      refreshBalance();
+    }, 2000);
+
+    // Balance visibility state persisted in localStorage
+    let balanceHidden = (localStorage.getItem('balanceHidden') === 'true');
+
+    function setToggleButtonIcon(btn, hidden) {
+      if (!btn) return;
+      if (hidden) btn.classList.add('hidden'); else btn.classList.remove('hidden');
+      btn.setAttribute('aria-pressed', hidden ? 'true' : 'false');
+    }
+
+    function updateBalanceDisplay(value) {
+      const balanceAmount = document.querySelector('.balance-amount');
+      if (!balanceAmount) return;
+      if (balanceHidden) {
+        balanceAmount.classList.add('masked');
+        // keep approximate width but hide value
+        balanceAmount.textContent = '•••••';
+      } else {
+        balanceAmount.classList.remove('masked');
+        const num = Number(value);
+        if (!Number.isNaN(num)) {
+          balanceAmount.textContent = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(num);
+        } else {
+          balanceAmount.textContent = value;
+        }
+      }
+    }
+
+    // Mark transactions list as ready once JS runs to avoid FOUC/flash and wire up toggle
+    document.addEventListener('DOMContentLoaded', function() {
+      const transactionsList = document.getElementById('transactionsList');
+      const toggleBtn = document.getElementById('toggleBalanceVisibility');
+      if (transactionsList) transactionsList.classList.add('_ready');
+      if (toggleBtn) {
+        setToggleButtonIcon(toggleBtn, balanceHidden);
+        toggleBtn.addEventListener('click', function() {
+          balanceHidden = !balanceHidden;
+          localStorage.setItem('balanceHidden', balanceHidden ? 'true' : 'false');
+          setToggleButtonIcon(toggleBtn, balanceHidden);
+          // refresh the displayed balance using the last known value from DOM (or re-fetch)
+          const balanceAmount = document.querySelector('.balance-amount');
+          const currentText = balanceAmount ? balanceAmount.getAttribute('data-raw') : null;
+          // If we have a raw value attribute keep it, otherwise fetch balance
+          if (currentText) {
+            updateBalanceDisplay(currentText);
+          } else {
+            // refetch balance from server to ensure correct display state
+            refreshBalance();
+          }
+        });
+      }
+
+      // Trigger an immediate refresh so the prepared list is populated right away
+      try { refreshTransactions(); refreshBalance(); } catch(e) { /* ignore */ }
+    });
+  </script>
 {% endblock content %}
 
