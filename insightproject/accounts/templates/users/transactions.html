@@ -1,0 +1,89 @@
+{% extends 'users/base.html' %}
+{% load static %}
+
+{% block content %}
+  <div class="transactions-page" style="padding:28px 18px;">
+    <div class="transactions-container" style="max-width:1100px; margin:0 auto;">
+
+      <div class="page-header" style="display:flex; align-items:center; justify-content:space-between; margin-bottom:18px;">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <a href="{% url 'dashboard' %}" class="btn back-btn" style="display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:8px; background:#fff; border:1px solid #e6e6e6; box-shadow:0 1px 4px rgba(0,0,0,0.05); text-decoration:none; color:#333;">
+            ← Back to Dashboard
+          </a>
+          <h2 style="margin:0; font-weight:600;">Transaction History</h2>
+        </div>
+        <div style="color:#666; font-size:14px;">All ({{ page_obj.paginator.count if page_obj else 0 }})</div>
+      </div>
+
+      <div class="transactions-list full-list" style="background:transparent; padding:8px;">
+        {% if page_obj and page_obj.object_list %}
+          {% for transaction in page_obj.object_list %}
+            <div class="tx-card" style="background:#fff; border-radius:12px; padding:16px; display:flex; align-items:center; justify-content:space-between; gap:12px; box-shadow:0 6px 18px rgba(18,23,31,0.04); border:1px solid #f0f0f0; margin-bottom:12px;">
+              <div style="display:flex; align-items:center; gap:14px; min-width:0; max-width:640px;">
+                <div class="recipient-avatar" style="width:44px; height:44px; border-radius:12px; background:#f3f0ff; display:flex; align-items:center; justify-content:center; font-size:18px; color:#5b3bd4;">👤</div>
+                <div style="min-width:0;">
+                  <div style="font-weight:600; color:#1f2937; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                    {% if transaction.transaction_type == 'deposit' %}
+                      Demo Deposit
+                    {% elif transaction.receiver == user %}
+                      From {{ transaction.sender.username }}
+                    {% else %}
+                      To {{ transaction.receiver.username }}
+                    {% endif %}
+                  </div>
+                  <div style="font-size:13px; color:#6b7280; margin-top:6px;">
+                    {% if transaction.transaction_type == 'deposit' %}
+                      {{ transaction.description }}
+                    {% elif transaction.receiver == user %}
+                      Received from {{ transaction.sender.username }}
+                    {% else %}
+                      Transfer to {{ transaction.receiver.username }}
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+
+              <div style="display:flex; flex-direction:column; align-items:flex-end; gap:6px;">
+                <div style="display:flex; align-items:center; gap:10px;">
+                  <div style="font-weight:700; color:{% if transaction.transaction_type == 'deposit' or transaction.receiver == user %}#059669{% else %}#ef4444{% endif %}; font-size:18px;">
+                    {% if transaction.transaction_type == 'deposit' or transaction.receiver == user %}
+                      +${{ transaction.amount|floatformat:2 }}
+                    {% else %}
+                      -${{ transaction.amount|floatformat:2 }}
+                    {% endif %}
+                  </div>
+                  <div>
+                    {% if transaction.transaction_type == 'deposit' %}
+                      <span class="badge badge-deposit" style="background:#d1fae5; color:#065f46; padding:6px 8px; border-radius:999px; font-size:12px;">Deposit</span>
+                    {% elif transaction.receiver == user %}
+                      <span class="badge badge-received" style="background:#d1fae5; color:#065f46; padding:6px 8px; border-radius:999px; font-size:12px;">Received</span>
+                    {% else %}
+                      <span class="badge badge-sent" style="background:#fff7ed; color:#7c2d12; padding:6px 8px; border-radius:999px; font-size:12px;">Sent</span>
+                    {% endif %}
+                  </div>
+                </div>
+
+                <div style="font-size:13px; color:#9ca3af;">{{ transaction.timestamp|date:"M d, Y H:i" }}</div>
+              </div>
+            </div>
+          {% endfor %}
+
+          <div class="pagination" style="display:flex; align-items:center; gap:12px; margin-top:10px;">
+            {% if page_obj.has_previous %}
+              <a href="?page={{ page_obj.previous_page_number }}" class="page-link" style="padding:8px 12px; background:#fff; border-radius:8px; border:1px solid #eee; text-decoration:none;">Previous</a>
+            {% endif %}
+
+            <span class="page-info" style="color:#6b7280;">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+
+            {% if page_obj.has_next %}
+              <a href="?page={{ page_obj.next_page_number }}" class="page-link" style="padding:8px 12px; background:#fff; border-radius:8px; border:1px solid #eee; text-decoration:none;">Next</a>
+            {% endif %}
+          </div>
+
+        {% else %}
+          <div class="empty" style="padding:40px; text-align:center; color:#9ca3af;">No transactions found.</div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+{% endblock content %}

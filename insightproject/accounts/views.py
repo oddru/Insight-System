@@ -11,6 +11,8 @@ from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
 from decimal import Decimal
 from .models import Account, Transaction
+from django.core.paginator import Paginator
+from django.db.models import Q
 
 def register(request):
     if request.method == 'POST':
@@ -218,3 +220,35 @@ def get_balance(request):
         return JsonResponse({'balance': float(account.balance)})
     except Account.DoesNotExist:
         return JsonResponse({'error': 'Account not found'}, status=404)
+
+
+def transactions_view(request):
+    """Dedicated transactions page with pagination for large histories."""
+    if not request.user.is_authenticated:
+        return redirect('home')
+
+    # Fetch all transactions involving the user
+    qs = Transaction.objects.filter(Q(sender=request.user) | Q(receiver=request.user)).order_by('-timestamp')
+
+    # Deduplicate logical transfer pairs similar to dashboard
+    seen = set()
+    txs = []
+    for t in qs:
+        key = (t.sender_id or 0, t.receiver_id or 0, str(t.amount), t.timestamp.replace(microsecond=0))
+        rev_key = (t.receiver_id or 0, t.sender_id or 0, str(t.amount), t.timestamp.replace(microsecond=0))
+        if key in seen or rev_key in seen:
+            continue
+        seen.add(key)
+        txs.append(t)
+
+    # Paginate the deduped list
+    paginator = Paginator(txs, 20)  # 20 per page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    account, _ = Account.objects.get_or_create(user=request.user)
+
+    return render(request, 'users/transactions.html', {
+        'page_obj': page_obj,
+        'account': account,
+    })
