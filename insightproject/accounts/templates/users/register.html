@@ -1,0 +1,163 @@
+{% extends 'users/base.html' %}
+{% load static %}
+
+{% block content %}
+  <div class="page">
+
+    <header class="site-header">
+      <div class="header-inner">
+        <div class="brand">
+          <img src="{% static 'assets/images/insightlogo.png' %}" alt="INSIGHT" class="logo">
+        </div>
+
+        <div class="header-controls">
+          <nav class="site-nav" aria-label="Primary">
+            <a class="nav-link" href="#">Products</a>
+            <a class="nav-link" href="#">Solutions</a>
+            <a class="nav-link" href="#">About us</a>
+            <a class="nav-link" href="#">Resources</a>
+          </nav>
+
+          <div class="search-wrap">
+            <input type="search" placeholder=" " aria-label="Search" class="search-field">
+          </div>
+
+          <button class="btn demo-btn" type="button">Request a demo</button>
+
+          <div class="lang">
+            <span class="lang-name">English</span>
+            <span class="lang-code">(En)</span>
+          </div>
+
+          <div class="user-session">
+            {% if request.user.is_authenticated %}
+              <span>Welcome, {{ request.user.username }}</span>
+              <a href="{% url 'logout' %}">Logout</a>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="header-separator"></div>
+
+    <div class="hero-wrapper">
+      <div class="diagonal-bg"></div>
+      <main class="hero">
+        <div class="hero-inner">
+
+          <div class="hero-left">
+            <h1 class="hero-title">
+              Smarter, Safer<br>
+              Digital Banking with AI-<br>
+              Driven Analytics
+            </h1>
+            <p class="hero-sub">
+              Insight empowers banks to secure transactions and achieve data-driven growth
+            </p>
+            <ul class="features">
+              <li>
+                <span class="feature-icon">📊</span>
+                <span class="feature-text">Real-Time Transaction Insights</span>
+              </li>
+              <li>
+                <span class="feature-icon">🛡️</span>
+                <span class="feature-text">AI Powered Fraud Detection</span>
+              </li>
+              <li>
+                <span class="feature-icon">📈</span>
+                <span class="feature-text">Actionable Banking Analytics</span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="hero-right">
+            <img src="{% static 'assets/images/woman.png' %}" class="woman-image" alt="Woman image">
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <section class="cta-footer">
+      <div class="cta-footer-inner">
+        <div class="hero-ctas">
+          <button class="btn primary" id="getStartedBtn">Get Started</button>
+          <button class="btn secondary">Book a Demo</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="logo-strip">
+      <div class="logo-strip-inner">
+        <div class="logos-container">
+          <div class="logo-item">Citizens Bank</div>
+          <div class="logo-item">Synovus</div>
+          <div class="logo-item">Bank</div>
+          <div class="logo-item">FIS</div>
+          <div class="logo-item">Truist</div>
+          <div class="logo-item">KBC</div>
+          <div class="logo-item">Bank Hapoalim</div>
+          <div class="logo-item">Hyundai Card</div>
+          <div class="logo-item">Huntington</div>
+          <div class="logo-item">RBC Royal Bank</div>
+          <div class="logo-item">BNP Paribas</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Register Modal -->
+    <div id="loginModal" class="modal show">
+      <div class="modal-content">
+        <span class="modal-close">&times;</span>
+        
+        <div class="modal-container">
+          <!-- Register Form -->
+          <div id="register-form" class="auth-form active">
+            <h2>Create Account</h2>
+            <form id="registerForm" method="POST" action="{% url 'register' %}">
+              {% csrf_token %}
+              
+              {% if form.non_field_errors %}
+                <div class="form-errors">
+                  {% for error in form.non_field_errors %}
+                    <p class="error-message">{{ error }}</p>
+                  {% endfor %}
+                </div>
+              {% endif %}
+              
+              {% for field in form %}
+                <div class="form-group">
+                  {% if field.name == 'username' %}
+                    <label for="{{ field.id_for_label }}">Email</label>
+                  {% else %}
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                  {% endif %}
+                  {{ field }}
+                  {% if field.errors %}
+                    <div class="field-errors">
+                      {% for error in field.errors %}
+                        <p class="error-message">{{ error }}</p>
+                      {% endfor %}
+                    </div>
+                  {% endif %}
+                  {% if field.help_text %}
+                    <small class="help-text">{{ field.help_text|safe }}</small>
+                  {% endif %}
+                </div>
+              {% endfor %}
+              
+              <div class="form-actions">
+                <button type="submit" class="btn primary">Register</button>
+                <span class="auth-toggle">Already have an account? <a href="{% url 'login' %}">Login here</a></span>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Script connection -->
+  <script src="{% static 'js/script.js' %}"></script>
+{% endblock content %}
