@@ -12,7 +12,7 @@
           </a>
           <h2 style="margin:0; font-weight:600;">Transaction History</h2>
         </div>
-        <div style="color:#666; font-size:14px;">All ({{ page_obj.paginator.count if page_obj else 0 }})</div>
+        <div style="color:#666; font-size:14px;">All ({% if page_obj %}{{ page_obj.paginator.count }}{% else %}0{% endif %})</div>
       </div>
 
       <div class="transactions-list full-list" style="background:transparent; padding:8px;">
